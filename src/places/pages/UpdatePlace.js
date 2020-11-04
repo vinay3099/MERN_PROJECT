@@ -1,8 +1,10 @@
 import React,{useEffect,useState} from 'react';
 import {useParams} from 'react-router-dom';
-import {VALIDATOR_REQUIRE,VALIDATOR_MINLENGTH} from '../../shared/util/validators'
+
 import  Input from '../../shared/components/FormElements/Input';
 import Button from '../../shared/components/UIElements/Button';
+import Card from '../../shared/components/UIElements/Card';
+import {VALIDATOR_REQUIRE,VALIDATOR_MINLENGTH} from '../../shared/util/validators'
 import {useForm} from '../../shared/hooks/form-hook'
 import './PlaceForm.css'
 const PLACES= [
@@ -52,17 +54,23 @@ const UpdatePlace =()=>{
     },false);
     const identifiedPlace = PLACES.find(p => p.id === placeId);
    useEffect(()=>{
-    setFormData(
-        { title:{
-        value:  identifiedPlace.title,
-        isValid: true
-    },
-    description:{
-        value:identifiedPlace.description,
-        isValid:true
-    }
+       if(identifiedPlace){
+
+        setFormData(
+            { title:{
+            value:  identifiedPlace.title,
+            isValid: true
+        },
+        description:{
+            value:identifiedPlace.description,
+            isValid:true
+        }
+       
+    },true)
+           
+       }
+
    
-},true)
 setIsLoading(false);
    },[setFormData,identifiedPlace]);
     const placeUpdateSubmitHandler=(event)=>{
@@ -71,7 +79,10 @@ setIsLoading(false);
     }
     if(!identifiedPlace){
         return(<div className="center">
-         <h2>Could not find place!</h2>
+            <Card>
+            <h2>Could not find place!</h2>
+            </Card>
+        
         </div>);
        
     }
@@ -82,6 +93,8 @@ setIsLoading(false);
 
     }
     return( 
+
+     
     <form className="place-form" onSubmit={placeUpdateSubmitHandler}>
     <Input id="title" element="input" type="text" label="Title" validators={[VALIDATOR_REQUIRE()]} errorText="Please enter a valid Title" initialValue={formState.inputs.title.value}  initialValid={formState.inputs.title.isValid} onInput={inputHandler}/>
   <Input id="description"element="textarea" label="Description" validators={[VALIDATOR_MINLENGTH(5)]} errorText="Please enter a valid Text(at least 5 characters)"  initialValue={formState.inputs.description.value}  initialValid={formState.inputs.description.isValid} onInput={inputHandler} />
